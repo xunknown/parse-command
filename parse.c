@@ -66,7 +66,7 @@ static int parse(struct option *opt)
 
 int main(int argc, char *argv[])
 {
-	char buffer[] = "a=1, b =2, c= 3, d=4, e = 5 ,f=,=7,=";
+	char buffer[] = "a=1, b =2, c= 3, d=4 , e = 5 ,f=, g, =7,=,,,";
 	struct option parse_opt = {
 		.buffer = buffer,
 		.delimiter0 = ",",

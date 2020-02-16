@@ -39,19 +39,27 @@ static int parse(struct option *opt)
 	while ((pair = strtok_r(buf, opt->delimiter0, &buf_next)) != NULL) {
 		buf = NULL;
 		printf("parse pair:'%s'\n", pair);
-		if ((key = strtok_r(pair, opt->delimiter1, &pair_next)) != NULL) {
+		char *left = strtok_r(pair, opt->delimiter1, &pair_next);
+		if (left == NULL) {
+			continue;
+		}
+		if (left == pair) {
+			key = left;
 			pair = NULL;
 			printf("get key:'%s'\n", key);
 			value = strtok_r(pair, opt->delimiter1, &pair_next);
 			printf("get value:'%s'\n", value);
-			if (opt->delimiter2 != NULL) {
-				char *tmp = NULL;
-				key = strtok_r(key, opt->delimiter2, &tmp);
-				value = strtok_r(value, opt->delimiter2, &tmp);
-			}
-
-			process_pair(opt, key, value);
+		} else {
+			value = left;
+			printf("get value:'%s'\n", value);
 		}
+
+		if (opt->delimiter2 != NULL) {
+			char *tmp = NULL;
+			key = strtok_r(key, opt->delimiter2, &tmp);
+			value = strtok_r(value, opt->delimiter2, &tmp);
+		}
+		process_pair(opt, key, value);
 	}
 	return 0;
 }

@@ -55,11 +55,33 @@ static int parse(struct option *opt)
 		}
 
 		if (opt->delimiter2 != NULL) {
-			char *tmp = NULL;
-			key = strtok_r(key, opt->delimiter2, &tmp);
-			value = strtok_r(value, opt->delimiter2, &tmp);
+			if (key != NULL) {
+				char *tmp = NULL;
+				key = strtok_r(key, opt->delimiter2, &tmp);
+			}
+			if (value != NULL) {
+				char *tmp = NULL;
+				value = strtok_r(value, opt->delimiter2, &tmp);
+			}
 		}
 		process_pair(opt, key, value);
+	}
+	return 0;
+}
+
+int parse_multi(int argc, char *argv[])
+{
+	for (int i = 1; i < argc; i++) {
+		struct option parse_opt = {
+			.buffer = argv[i],
+			.delimiter0 = ",",
+			.delimiter1 = "=",
+			.delimiter2 = " ",
+			.handler = callback_handler,
+			.data = NULL,
+		};
+
+		parse(&parse_opt);
 	}
 	return 0;
 }
@@ -77,6 +99,8 @@ int main(int argc, char *argv[])
 	};
 
 	parse(&parse_opt);
+
+	parse_multi(argc, argv);
 
 	return 0;
 }
